@@ -1,23 +1,46 @@
-name: Build and Deploy
+name: Deploy RSVP to Firebase Hosting
 
 on:
   push:
-    branches: [ master ]
+    branches: [ feat/rsvp-app-with-game ]   # <- your active branch
+  workflow_dispatch:                         # lets you run it manually
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Use Node 18
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: 18
+          cache: npm
 
       - name: Install deps
-        run: npm ci || npm install
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm i; fi
+
+      # Debug to confirm Tailwind/PostCSS config on the runner
+      - name: Debug Tailwind/PostCSS setup
+        run: |
+          echo "== Branch & SHA =="
+          git rev-parse --abbrev-ref HEAD
+          git rev-parse HEAD
+
+          echo "== postcss.config.js =="
+          ls -la
+          cat postcss.config.js || true
+
+          echo "== devDependencies =="
+          node -e "console.log(JSON.parse(require('fs').readFileSync('package.json','utf8')).devDependencies)"
+
+          echo "== CSS entrypoint (first 50 lines) =="
+          sed -n '1,50p' src/index.css || true
+
+          echo "== npm ls versions =="
+          npm ls @tailwindcss/postcss tailwindcss postcss autoprefixer || true
 
       - name: Build
         run: npm run build
@@ -25,7 +48,9 @@ jobs:
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
           projectId: rsvp-invite-7f77c
+          # If your Firebase project has multiple Hosting sites, also add:
+          # site: rsvp-invite-7f77c
