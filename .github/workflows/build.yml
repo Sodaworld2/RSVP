@@ -42,6 +42,17 @@ jobs:
           echo "== npm ls versions =="
           npm ls @tailwindcss/postcss tailwindcss postcss autoprefixer || true
 
+                - name: Debug Tailwind/PostCSS setup
+        run: |
+          echo "== Branch & SHA ==" && git rev-parse --abbrev-ref HEAD && git rev-parse HEAD
+          echo "== Repo root listing ==" && ls -la
+          echo "== postcss.config.js (root) ==" && cat postcss.config.js || true
+          echo "== Search for tailwindcss plugin refs ==" && (grep -R "require('tailwindcss')" -n . || true)
+          echo "== package.json devDependencies ==" && node -e "console.log(JSON.parse(require('fs').readFileSync('package.json','utf8')).devDependencies)"
+          echo "== CSS entrypoint (first 60 lines) ==" && (sed -n '1,60p' src/index.css || true)
+          echo "== Versions installed ==" && npm ls @tailwindcss/postcss tailwindcss postcss autoprefixer || true
+
+
       - name: Build
         run: npm run build
 
