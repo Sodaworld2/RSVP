@@ -2,13 +2,12 @@ name: Deploy RSVP to Firebase Hosting
 
 on:
   push:
-    branches: [ feat/rsvp-app-with-game ]   # <- your active branch
-  workflow_dispatch:                         # lets you run it manually
+    branches: [ feat/rsvp-app-with-game ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -21,37 +20,6 @@ jobs:
       - name: Install deps
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm i; fi
-
-      # Debug to confirm Tailwind/PostCSS config on the runner
-      - name: Debug Tailwind/PostCSS setup
-        run: |
-          echo "== Branch & SHA =="
-          git rev-parse --abbrev-ref HEAD
-          git rev-parse HEAD
-
-          echo "== postcss.config.js =="
-          ls -la
-          cat postcss.config.js || true
-
-          echo "== devDependencies =="
-          node -e "console.log(JSON.parse(require('fs').readFileSync('package.json','utf8')).devDependencies)"
-
-          echo "== CSS entrypoint (first 50 lines) =="
-          sed -n '1,50p' src/index.css || true
-
-          echo "== npm ls versions =="
-          npm ls @tailwindcss/postcss tailwindcss postcss autoprefixer || true
-
-                - name: Debug Tailwind/PostCSS setup
-        run: |
-          echo "== Branch & SHA ==" && git rev-parse --abbrev-ref HEAD && git rev-parse HEAD
-          echo "== Repo root listing ==" && ls -la
-          echo "== postcss.config.js (root) ==" && cat postcss.config.js || true
-          echo "== Search for tailwindcss plugin refs ==" && (grep -R "require('tailwindcss')" -n . || true)
-          echo "== package.json devDependencies ==" && node -e "console.log(JSON.parse(require('fs').readFileSync('package.json','utf8')).devDependencies)"
-          echo "== CSS entrypoint (first 60 lines) ==" && (sed -n '1,60p' src/index.css || true)
-          echo "== Versions installed ==" && npm ls @tailwindcss/postcss tailwindcss postcss autoprefixer || true
-
 
       - name: Build
         run: npm run build
