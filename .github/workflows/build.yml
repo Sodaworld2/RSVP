@@ -15,11 +15,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
+          # ❌ do NOT set cache: npm unless you have package-lock.json
 
       - name: Install deps
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm i; fi
+        run: npm install
 
       - name: Build
         run: npm run build
@@ -31,5 +30,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           channelId: live
           projectId: rsvp-invite-7f77c
-          # If your Firebase project has multiple Hosting sites, also add:
+          # If this project has multiple hosting sites, also add:
           # site: rsvp-invite-7f77c
