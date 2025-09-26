@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.css';
 import SplashPage from './components/SplashPage';
 import RsvpForm from './components/RsvpForm';
 import RainbowHopGame from './components/RainbowHopGame';

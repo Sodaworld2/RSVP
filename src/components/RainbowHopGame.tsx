@@ -83,7 +83,7 @@ const RainbowHopGame = () => {
     }, 1000 / 60);
 
     return () => clearInterval(gameInterval);
-  }, [isRunning, playerVelY, obstacles]);
+  }, [isRunning, playerVelY, obstacles, playerY]);
 
   // Obstacle generation
   useEffect(() => {
