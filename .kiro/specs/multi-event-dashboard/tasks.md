@@ -9,14 +9,14 @@
 
 - [x] 2. Implement enhanced data models and validation
 
-
   - Create Event model interface with validation functions
   - Update RsvpData interface to include eventId reference
   - Implement User model for authentication data
   - Create GameType enum and related types
   - _Requirements: 8.1, 8.2, 7.1_
 
-- [ ] 3. Set up Firebase Authentication with Google and domain restrictions
+- [x] 3. Set up Firebase Authentication with Google and domain restrictions
+
 
   - Configure Firebase Auth with Google provider
   - Implement AuthService with domain validation for sodaworld.tv
