@@ -27,8 +27,8 @@ const Game: React.FC<GameProps> = ({onPlayAgain}) => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameRunning, setIsGameRunning] = useState(false);
 
-  const gameLoopRef = useRef<number>();
-  const lastTimeRef = useRef<number>();
+  const gameLoopRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
   const obstacleCounterRef = useRef<number>(0);
   const nextObstacleTimeRef = useRef<number>(0);
 

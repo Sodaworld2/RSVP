@@ -13,6 +13,7 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ onSubmit }) => {
     name: '',
     email: '',
     connectionMethod: null,
+    eventId: 'default-event', // Temporary default for existing single-event system
   });
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
