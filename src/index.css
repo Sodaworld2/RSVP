@@ -1,8 +1,0 @@
-/* Either v4 single import (preferred) */
-@import "tailwindcss";
-
-/* v3 style also works if you still have it:
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-*/

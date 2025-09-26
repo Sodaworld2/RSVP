@@ -1,39 +1,54 @@
-import React, { useState } from 'react';
-import SplashPage from './components/SplashPage';
-import RsvpForm from './components/RsvpForm';
-import RainbowHopGame from './components/RainbowHopGame';
+import React, { useState, useCallback } from 'react';
+import RsvpForm from './components/rsvp/RsvpForm';
+import Game from './components/games/Game';
+import Flyer from './components/common/Flyer';
+import SplashPage from './components/rsvp/SplashPage';
 
-type Page = 'splash' | 'rsvp' | 'game';
+const App: React.FC = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('splash');
+  const handleContinueToForm = useCallback(() => {
+    setShowForm(true);
+  }, []);
 
-  const handleEnter = () => {
-    setCurrentPage('rsvp');
-  };
+  const handleRsvpSubmit = useCallback(() => {
+    setIsSubmitted(true);
+  }, []);
 
-  const handleRsvpSuccess = () => {
-    setCurrentPage('game');
-  };
+  const handleBackToForm = useCallback(() => {
+    setIsSubmitted(false);
+  }, []);
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'splash':
-        return <SplashPage onEnter={handleEnter} />;
-      case 'rsvp':
-        return <RsvpForm onSuccess={handleRsvpSuccess} />;
-      case 'game':
-        return <RainbowHopGame />;
-      default:
-        return <SplashPage onEnter={handleEnter} />;
-    }
-  };
+
+  if (!showForm) {
+    return <SplashPage onContinue={handleContinueToForm} />;
+  }
 
   return (
-    <div className="App">
-      {renderPage()}
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-[#8A2BE2] text-slate-800">
+      <main className="w-full max-w-md mx-auto">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-500">
+          <div className="bg-yellow-400 p-6">
+             <div className="w-48 h-48 mx-auto">
+                <Flyer />
+             </div>
+          </div>
+
+          <div className="p-8">
+            {isSubmitted ? (
+              <Game onPlayAgain={handleBackToForm} />
+            ) : (
+              <RsvpForm onSubmit={handleRsvpSubmit} />
+            )}
+          </div>
+        </div>
+        <footer className="text-center text-white text-opacity-70 mt-4 text-sm">
+          <p>Created with fun by a World-Class React Engineer</p>
+        </footer>
+      </main>
     </div>
   );
-}
+};
 
 export default App;
