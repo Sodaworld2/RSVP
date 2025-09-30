@@ -57,7 +57,18 @@ class EventServiceImpl implements EventService {
       where('datetime', '>', Timestamp.fromDate(now)),
       orderBy('datetime', 'asc')
     );
-    
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.mapDocToEvent(doc));
+  }
+
+  async getAllActiveEvents(): Promise<Event[]> {
+    const q = query(
+      collection(db, this.collectionName),
+      where('isActive', '==', true),
+      orderBy('datetime', 'asc')
+    );
+
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => this.mapDocToEvent(doc));
   }

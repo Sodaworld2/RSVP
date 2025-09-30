@@ -214,6 +214,7 @@ export interface EventService {
   getEventsByUser(userEmail: string): Promise<Event[]>;
   getEventById(id: string): Promise<Event | null>;
   getActiveEvents(): Promise<Event[]>;
+  getAllActiveEvents(): Promise<Event[]>;
   getEventsForReminders(): Promise<Event[]>;
   updateEvent(id: string, updates: Partial<Event>): Promise<void>;
   deleteEvent(id: string): Promise<void>;

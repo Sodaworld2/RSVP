@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Event } from '../../types';
 import EventCard from './EventCard';
+import ReminderPanel from './ReminderPanel';
 
 interface EventListProps {
   events: Event[];
@@ -65,6 +66,9 @@ const EventList: React.FC<EventListProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Reminder Management Panel */}
+      <ReminderPanel />
 
       {/* Events Grid */}
       {events.length === 0 ? (
