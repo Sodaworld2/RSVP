@@ -4,13 +4,11 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 interface UserProfileProps {
   showSignOut?: boolean;
   className?: string;
-  style?: React.CSSProperties;
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({ 
   showSignOut = true, 
-  className, 
-  style 
+  className = '' 
 }) => {
   const { user, signOut, loading } = useAuthContext();
 
@@ -27,48 +25,19 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   };
 
   return (
-    <div 
-      className={className}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '8px',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '8px',
-        ...style
-      }}
-    >
+    <div className={`flex items-center gap-3 p-2 bg-white/10 rounded-lg backdrop-blur-sm ${className}`}>
       {user.photoURL && (
         <img
           src={user.photoURL}
           alt={user.displayName || 'User'}
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            objectFit: 'cover'
-          }}
+          className="w-8 h-8 rounded-full object-cover border-2 border-white/20"
         />
       )}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ 
-          fontSize: '14px', 
-          fontWeight: '600', 
-          color: 'white',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap'
-        }}>
+      <div className="flex-1 min-w-0 hidden sm:block">
+        <div className="text-sm font-semibold text-white truncate">
           {user.displayName || 'User'}
         </div>
-        <div style={{ 
-          fontSize: '12px', 
-          color: 'rgba(255, 255, 255, 0.8)',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap'
-        }}>
+        <div className="text-xs text-white/80 truncate">
           {user.email}
         </div>
       </div>
@@ -76,17 +45,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         <button
           onClick={handleSignOut}
           disabled={loading}
-          style={{
-            backgroundColor: 'transparent',
-            color: 'rgba(255, 255, 255, 0.8)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '4px',
-            padding: '4px 8px',
-            fontSize: '12px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-            transition: 'all 0.2s ease'
-          }}
+          className="bg-transparent text-white/80 border border-white/30 rounded px-2 py-1 text-xs hover:bg-white/10 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? '...' : 'Sign Out'}
         </button>

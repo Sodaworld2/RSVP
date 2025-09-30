@@ -138,8 +138,8 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             name="title"
             value={formData.title}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-[#8A2BE2] focus:border-transparent ${
-              errors.title ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg ${
+              errors.title ? 'border-red-500' : 'border-slate-300'
             }`}
             placeholder="Enter event title"
             maxLength={100}
@@ -158,8 +158,8 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             value={formData.description}
             onChange={handleInputChange}
             rows={3}
-            className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-[#8A2BE2] focus:border-transparent ${
-              errors.description ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg ${
+              errors.description ? 'border-red-500' : 'border-slate-300'
             }`}
             placeholder="Enter event description"
             maxLength={500}
@@ -178,8 +178,8 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             name="datetime"
             value={formData.datetime}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-[#8A2BE2] focus:border-transparent ${
-              errors.datetime ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg ${
+              errors.datetime ? 'border-red-500' : 'border-slate-300'
             }`}
           />
           {errors.datetime && <p className="mt-1 text-sm text-red-600">{errors.datetime}</p>}
@@ -195,7 +195,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             name="gameType"
             value={formData.gameType}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#8A2BE2] focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg"
           >
             <option value={GameType.RAINBOW_HOP}>Rainbow Hop</option>
           </select>
@@ -211,7 +211,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             id="logo"
             accept="image/png,image/jpeg,image/jpg,image/gif"
             onChange={handleFileChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#8A2BE2] focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg"
           />
           {errors.logo && <p className="mt-1 text-sm text-red-600">{errors.logo}</p>}
           

@@ -70,8 +70,8 @@ const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       {/* Event Details */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-slate-800 mb-2 overflow-hidden" style={{
+      <div className="p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-bold text-slate-800 mb-2 overflow-hidden" style={{
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical'
@@ -80,7 +80,7 @@ const EventCard: React.FC<EventCardProps> = ({
         </h3>
         
         {event.description && (
-          <p className="text-gray-600 text-sm mb-3 overflow-hidden" style={{
+          <p className="text-gray-600 text-xs sm:text-sm mb-3 overflow-hidden" style={{
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical'
@@ -90,12 +90,12 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
 
         <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-xs sm:text-sm text-gray-600">
             <span className="mr-2">🕒</span>
-            <span>{formatDate(event.datetime)}</span>
+            <span className="truncate">{formatDate(event.datetime)}</span>
           </div>
           
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-xs sm:text-sm text-gray-600">
             <span className="mr-2">🎮</span>
             <span className="capitalize">{event.gameType.replace('_', ' ')}</span>
           </div>
@@ -142,18 +142,18 @@ const EventCard: React.FC<EventCardProps> = ({
         {/* RSVP Link */}
         <div className="mt-4 pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-500 mb-1">RSVP Link:</p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <input
               type="text"
               value={`${window.location.origin}/rsvp/${event.id}`}
               readOnly
-              className="flex-1 text-xs bg-gray-100 px-2 py-1 rounded border text-gray-600"
+              className="flex-1 text-xs bg-gray-100 px-2 py-1 rounded border text-gray-600 min-w-0"
             />
             <button
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/rsvp/${event.id}`);
               }}
-              className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded transition-colors"
+              className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded transition-colors flex-shrink-0"
               title="Copy link"
             >
               📋

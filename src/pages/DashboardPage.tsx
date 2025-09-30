@@ -55,26 +55,30 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#8A2BE2] text-white">
-      <header className="bg-[#6B46C1] shadow-lg">
+      <header className="bg-[#6B46C1] shadow-lg sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-bold">Event Dashboard</h1>
+          <div className="flex justify-between items-center py-4 sm:py-6">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold truncate">
+                Event Dashboard
+              </h1>
               {viewMode !== 'list' && (
                 <button
                   onClick={() => setViewMode('list')}
-                  className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors"
+                  className="text-xs sm:text-sm bg-white/20 hover:bg-white/30 px-2 sm:px-3 py-1 rounded-lg transition-colors whitespace-nowrap"
                 >
-                  ← Back to Events
+                  ← Back
                 </button>
               )}
             </div>
-            <UserProfile />
+            <div className="flex-shrink-0">
+              <UserProfile />
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {viewMode === 'list' && (
           <EventList
             events={events}

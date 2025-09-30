@@ -46,11 +46,11 @@ const EventList: React.FC<EventListProps> = ({
   return (
     <div className="space-y-6">
       {/* Header with Create Button */}
-      <div className="bg-white rounded-3xl shadow-2xl p-8 text-slate-800">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold">Your Events</h2>
-            <p className="text-gray-600 mt-1">
+      <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-800">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex-1">
+            <h2 className="text-xl sm:text-2xl font-bold">Your Events</h2>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
               {events.length === 0 
                 ? 'No events created yet' 
                 : `${events.length} event${events.length === 1 ? '' : 's'} created`
@@ -59,7 +59,7 @@ const EventList: React.FC<EventListProps> = ({
           </div>
           <button
             onClick={onCreateEvent}
-            className="bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-3 px-6 rounded-2xl transition-colors"
+            className="bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-3 px-4 sm:px-6 rounded-2xl transition-colors text-sm sm:text-base whitespace-nowrap"
           >
             Create New Event
           </button>
@@ -68,23 +68,23 @@ const EventList: React.FC<EventListProps> = ({
 
       {/* Events Grid */}
       {events.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-2xl p-8 text-slate-800 text-center">
-          <div className="py-12">
-            <div className="text-6xl mb-4">📅</div>
-            <h3 className="text-xl font-semibold mb-2">No Events Yet</h3>
-            <p className="text-gray-600 mb-6">
+        <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-slate-800 text-center">
+          <div className="py-8 sm:py-12">
+            <div className="text-4xl sm:text-6xl mb-4">📅</div>
+            <h3 className="text-lg sm:text-xl font-semibold mb-2">No Events Yet</h3>
+            <p className="text-gray-600 mb-6 text-sm sm:text-base max-w-md mx-auto">
               Get started by creating your first event. You'll be able to manage RSVPs and track attendance.
             </p>
             <button
               onClick={onCreateEvent}
-              className="bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-3 px-6 rounded-2xl transition-colors"
+              className="bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-3 px-4 sm:px-6 rounded-2xl transition-colors text-sm sm:text-base"
             >
               Create Your First Event
             </button>
           </div>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
             <EventCard
               key={event.id}
