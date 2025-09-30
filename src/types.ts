@@ -19,7 +19,9 @@ export interface RsvpData {
 // Game types enum
 export enum GameType {
   RAINBOW_HOP = 'rainbow_hop',
-  // Future game types can be added here
+  SIMPLE_CLICKER = 'simple_clicker',
+  COLOR_MATCH = 'color_match',
+  NONE = 'none',
 }
 
 // Event interface

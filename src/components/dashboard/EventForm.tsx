@@ -112,7 +112,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
       console.error('Error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
-        eventData: finalEventData
+        eventData: eventData
       });
       setErrors({ submit: `Failed to save event: ${error instanceof Error ? error.message : 'Unknown error'}` });
     } finally {
@@ -188,7 +188,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
         {/* Game Type */}
         <div>
           <label htmlFor="gameType" className="block text-sm font-medium text-gray-700 mb-2">
-            Game Type
+            Post-RSVP Game
           </label>
           <select
             id="gameType"
@@ -197,8 +197,12 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
             onChange={handleInputChange}
             className="w-full px-4 py-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-300 text-lg"
           >
-            <option value={GameType.RAINBOW_HOP}>Rainbow Hop</option>
+            <option value={GameType.RAINBOW_HOP}>Rainbow Hop (Jump Game)</option>
+            <option value={GameType.SIMPLE_CLICKER}>Simple Clicker (Click for Points)</option>
+            <option value={GameType.COLOR_MATCH}>Color Match (Memory Game)</option>
+            <option value={GameType.NONE}>No Game</option>
           </select>
+          <p className="mt-1 text-sm text-gray-500">Choose what game attendees will see after submitting their RSVP</p>
         </div>
 
         {/* Logo Upload */}
