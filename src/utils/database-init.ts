@@ -6,28 +6,30 @@ import { databaseService } from '../services/database';
  */
 export async function initializeDatabase(): Promise<void> {
   try {
-    console.log('Initializing database...');
+    console.log('Initializing database in background...');
+    
+    // Only do essential initialization that doesn't block the UI
     await databaseService.initializeDatabase();
     
-    // Validate the schema
-    const validation = await databaseService.validateSchema();
-    console.log('Database validation:', validation);
-    
-    if (validation.status === 'ready') {
-      console.log('Database is ready for use');
-      
-      // Log required indexes for manual setup
-      console.log('Required indexes (set up in Firebase Console):');
-      validation.indexesRequired.forEach(index => {
-        console.log(`  - ${index}`);
-      });
-    } else {
-      console.warn('Database needs setup. Please check the configuration.');
-    }
+    // Do validation asynchronously without blocking
+    setTimeout(async () => {
+      try {
+        const validation = await databaseService.validateSchema();
+        console.log('Database validation:', validation);
+        
+        if (validation.status === 'ready') {
+          console.log('Database is ready for use');
+        } else {
+          console.warn('Database needs setup. Please check the configuration.');
+        }
+      } catch (error) {
+        console.warn('Database validation failed:', error);
+      }
+    }, 100);
     
   } catch (error) {
     console.error('Failed to initialize database:', error);
-    throw error;
+    // Don't throw - let the app continue to work
   }
 }
 

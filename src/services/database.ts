@@ -1,5 +1,6 @@
 import { db } from '../firebaseConfig';
 import { collection, doc, setDoc, enableIndexedDbPersistence } from 'firebase/firestore';
+import { GameType } from '../types';
 
 /**
  * Database migration and setup service
@@ -22,8 +23,17 @@ export class DatabaseService {
    * This should be called once during application startup
    */
   async initializeDatabase(): Promise<void> {
+    // Enable offline persistence asynchronously without blocking
+    this.enablePersistenceAsync();
+    
+    // Create collection structure asynchronously
+    this.createCollectionStructureAsync();
+    
+    console.log('Database initialization started (non-blocking)');
+  }
+
+  private async enablePersistenceAsync(): Promise<void> {
     try {
-      // Enable offline persistence for better performance
       await enableIndexedDbPersistence(db);
       console.log('Database persistence enabled');
     } catch (error: any) {
@@ -35,9 +45,15 @@ export class DatabaseService {
         console.error('Error enabling database persistence:', error);
       }
     }
+  }
 
-    await this.createCollectionStructure();
-    console.log('Database initialization complete');
+  private async createCollectionStructureAsync(): Promise<void> {
+    try {
+      await this.createCollectionStructure();
+      console.log('Database collection structure created');
+    } catch (error) {
+      console.error('Error creating collection structure:', error);
+    }
   }
 
   /**
@@ -214,7 +230,7 @@ export class DatabaseMigration {
       description: 'Our regular weekly prototype session - migrated from single-event system',
       datetime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Next week
       createdBy,
-      gameType: 'rainbow_hop' as const,
+      gameType: GameType.RAINBOW_HOP,
       isActive: true
     };
 

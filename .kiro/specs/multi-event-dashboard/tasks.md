@@ -33,14 +33,13 @@
 
 - [x] 5. Implement database schema migration and services
 
-
   - Create events collection structure in Firestore
   - Update rsvps collection to include eventId references
   - Implement EventService with CRUD operations
   - Create database indexes for optimal query performance
   - _Requirements: 8.1, 8.2, 8.3, 8.5_
 
-- [ ] 6. Build event management functionality
+- [x] 6. Build event management functionality
 
   - Create event creation form with title, datetime, and logo upload
   - Implement file upload service for event logos using Firebase Storage
