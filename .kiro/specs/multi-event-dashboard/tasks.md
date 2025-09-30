@@ -73,7 +73,7 @@
   - Add event not found and closed RSVP error handling
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 6.4, 6.5_
 
-- [ ] 9. Implement game configuration system
+- [x] 9. Implement game configuration system
 
   - Add game type selection to event creation form
   - Update Game component to accept configurable game type
@@ -81,7 +81,7 @@
   - Create game type enum and selection interface
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 10. Build email notification service
+- [x] 10. Build email notification service
 
   - Implement EmailService to integrate with external email API
   - Create email templates for RSVP confirmations and organizer notifications
