@@ -102,8 +102,13 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSubmit, onCancel, userEm
         await eventService.updateEvent(event.id, finalEventData);
         resultEvent = { ...event, ...finalEventData };
       } else {
-        // Create new event
-        resultEvent = await eventService.createEvent(finalEventData);
+        // For new events, prepare the data but let the parent handle creation
+        resultEvent = {
+          ...finalEventData,
+          id: '', // Temporary ID, will be set by the service
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as Event;
       }
 
       onSubmit(resultEvent);
