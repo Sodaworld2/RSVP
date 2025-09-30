@@ -6,17 +6,23 @@ import { collection, addDoc } from 'firebase/firestore';
 
 interface RsvpFormProps {
   onSubmit: () => void;
+  eventId?: string;
 }
 
-const RsvpForm: React.FC<RsvpFormProps> = ({ onSubmit }) => {
+const RsvpForm: React.FC<RsvpFormProps> = ({ onSubmit, eventId }) => {
   const [formData, setFormData] = useState<RsvpData>({
     name: '',
     email: '',
     connectionMethod: null,
-    eventId: 'default-event', // Temporary default for existing single-event system
+    eventId: eventId || 'default-event', // Use provided eventId or default for backward compatibility
   });
   const [error, setError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Update eventId when prop changes
+  React.useEffect(() => {
+    setFormData(prev => ({ ...prev, eventId: eventId || 'default-event' }));
+  }, [eventId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

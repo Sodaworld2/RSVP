@@ -12,9 +12,27 @@
     <style>
       body {
         font-family: 'Fredoka One', cursive;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
       }
       .font-luckiest {
         font-family: 'Luckiest Guy', cursive;
+      }
+      
+      /* Ensure safe areas on mobile devices */
+      @supports (padding: max(0px)) {
+        body {
+          padding-left: max(0px, env(safe-area-inset-left));
+          padding-right: max(0px, env(safe-area-inset-right));
+          padding-bottom: max(0px, env(safe-area-inset-bottom));
+        }
+      }
+      
+      /* Prevent content from being cut off */
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh; /* Dynamic viewport height for mobile */
       }
     </style>
 
@@ -31,7 +49,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-mNWhFuG-.js"></script>
+  <script type="module" crossorigin src="/assets/index-BwnVbSKP.js"></script>
 </head>
   <body class="bg-[#8A2BE2]">
     <div id="root"></div>

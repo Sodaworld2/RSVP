@@ -35,18 +35,18 @@ const Flyer: React.FC = () => {
             </text>
         </g>
         
-        {/* Bottom Text */}
+        {/* Bottom Text - significantly smaller font size to fit within 200px width */}
         <text 
             x="100" 
             y="165" 
             textAnchor="middle" 
             style={{ fontFamily: 'Luckiest Guy, cursive' }}
-            fontSize="40" 
+            fontSize="24" 
             fill="#FBBF24" 
             stroke="black" 
-            strokeWidth="2.5" 
+            strokeWidth="1.5" 
             strokeLinejoin="round"
-            letterSpacing="1"
+            letterSpacing="0.5"
         >
           prototype sessions
         </text>
