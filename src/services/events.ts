@@ -1,5 +1,6 @@
 import { Event, EventService, GameType } from '../types';
 import { db, storage } from '../firebaseConfig';
+import { retry, retryConditions } from '../utils/retry';
 import { 
   collection, 
   addDoc, 
@@ -19,22 +20,30 @@ class EventServiceImpl implements EventService {
   private readonly collectionName = 'events';
 
   async createEvent(eventData: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event> {
-    const now = new Date();
-    const docData = {
-      ...eventData,
-      datetime: Timestamp.fromDate(eventData.datetime),
-      createdAt: Timestamp.fromDate(now),
-      updatedAt: Timestamp.fromDate(now),
-    };
+    return await retry(async () => {
+      const now = new Date();
+      const docData = {
+        ...eventData,
+        datetime: Timestamp.fromDate(eventData.datetime),
+        createdAt: Timestamp.fromDate(now),
+        updatedAt: Timestamp.fromDate(now),
+      };
 
-    const docRef = await addDoc(collection(db, this.collectionName), docData);
-    
-    return {
-      ...eventData,
-      id: docRef.id,
-      createdAt: now,
-      updatedAt: now,
-    };
+      const docRef = await addDoc(collection(db, this.collectionName), docData);
+
+      return {
+        ...eventData,
+        id: docRef.id,
+        createdAt: now,
+        updatedAt: now,
+      };
+    }, {
+      maxAttempts: 3,
+      delayMs: 1000,
+      onRetry: (attempt, error) => {
+        console.log(`Event creation attempt ${attempt} failed:`, error.message);
+      }
+    });
   }
 
   async getEventsByUser(userEmail: string): Promise<Event[]> {
