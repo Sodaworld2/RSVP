@@ -5,6 +5,7 @@ interface EventCardProps {
   event: Event;
   onEdit: () => void;
   onDelete: () => void;
+  onViewRsvps: () => void;
   showDeleteConfirm: boolean;
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
@@ -14,6 +15,7 @@ const EventCard: React.FC<EventCardProps> = ({
   event,
   onEdit,
   onDelete,
+  onViewRsvps,
   showDeleteConfirm,
   onDeleteConfirm,
   onDeleteCancel,
@@ -103,19 +105,27 @@ const EventCard: React.FC<EventCardProps> = ({
 
         {/* Action Buttons */}
         {!showDeleteConfirm ? (
-          <div className="flex gap-2">
+          <div className="space-y-2">
             <button
-              onClick={onEdit}
-              className="flex-1 bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
+              onClick={onViewRsvps}
+              className="w-full bg-[#8A2BE2] hover:bg-[#7B1FA2] text-white font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
             >
-              Edit
+              📋 View RSVPs
             </button>
-            <button
-              onClick={onDelete}
-              className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
-            >
-              Delete
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={onEdit}
+                className="flex-1 bg-[#FFD700] hover:bg-[#FFC700] text-black font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
+              >
+                Edit
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ) : (
           <div className="space-y-2">

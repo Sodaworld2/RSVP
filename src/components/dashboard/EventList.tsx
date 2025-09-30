@@ -9,6 +9,7 @@ interface EventListProps {
   onEditEvent: (event: Event) => void;
   onDeleteEvent: (eventId: string) => void;
   onCreateEvent: () => void;
+  onViewRsvps: (event: Event) => void;
 }
 
 const EventList: React.FC<EventListProps> = ({
@@ -17,6 +18,7 @@ const EventList: React.FC<EventListProps> = ({
   onEditEvent,
   onDeleteEvent,
   onCreateEvent,
+  onViewRsvps,
 }) => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -97,6 +99,7 @@ const EventList: React.FC<EventListProps> = ({
               event={event}
               onEdit={() => onEditEvent(event)}
               onDelete={() => handleDeleteClick(event.id)}
+              onViewRsvps={() => onViewRsvps(event)}
               showDeleteConfirm={deleteConfirm === event.id}
               onDeleteConfirm={() => handleDeleteConfirm(event.id)}
               onDeleteCancel={handleDeleteCancel}

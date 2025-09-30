@@ -4,15 +4,17 @@ import { useEvents } from '../hooks/useEvents';
 import { UserProfile } from '../components/common/UserProfile';
 import EventList from '../components/dashboard/EventList';
 import EventForm from '../components/dashboard/EventForm';
+import RsvpList from '../components/dashboard/RsvpList';
 import { Event } from '../types';
 
-type ViewMode = 'list' | 'create' | 'edit';
+type ViewMode = 'list' | 'create' | 'edit' | 'rsvps';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuthContext();
   const { events, loading, createEvent, updateEvent, deleteEvent } = useEvents(user?.email);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [viewingRsvpsEvent, setViewingRsvpsEvent] = useState<Event | null>(null);
 
   const handleCreateEvent = () => {
     setEditingEvent(null);
@@ -22,6 +24,11 @@ const DashboardPage: React.FC = () => {
   const handleEditEvent = (event: Event) => {
     setEditingEvent(event);
     setViewMode('edit');
+  };
+
+  const handleViewRsvps = (event: Event) => {
+    setViewingRsvpsEvent(event);
+    setViewMode('rsvps');
   };
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -51,6 +58,11 @@ const DashboardPage: React.FC = () => {
   const handleFormCancel = () => {
     setViewMode('list');
     setEditingEvent(null);
+  };
+
+  const handleRsvpListBack = () => {
+    setViewMode('list');
+    setViewingRsvpsEvent(null);
   };
 
   return (
@@ -86,6 +98,7 @@ const DashboardPage: React.FC = () => {
             onCreateEvent={handleCreateEvent}
             onEditEvent={handleEditEvent}
             onDeleteEvent={handleDeleteEvent}
+            onViewRsvps={handleViewRsvps}
           />
         )}
 
@@ -95,6 +108,13 @@ const DashboardPage: React.FC = () => {
             onSubmit={handleFormSubmit}
             onCancel={handleFormCancel}
             userEmail={user.email}
+          />
+        )}
+
+        {viewMode === 'rsvps' && viewingRsvpsEvent && (
+          <RsvpList
+            event={viewingRsvpsEvent}
+            onBack={handleRsvpListBack}
           />
         )}
       </main>
