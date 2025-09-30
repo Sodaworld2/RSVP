@@ -61,7 +61,11 @@
   - Add navigation and user profile display
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 8. Update RSVP system for multi-event support
+- [x] 8. Update RSVP system for multi-event support
+
+
+
+
 
   - Modify RSVP form to accept event ID parameter from URL
   - Update RsvpService to associate RSVPs with specific events

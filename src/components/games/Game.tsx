@@ -14,12 +14,15 @@ interface Obstacle {
   x: number;
   id: number;
 }
+import { GameType } from '../../types';
+
 interface GameProps {
   onPlayAgain: () => void;
+  gameType?: GameType;
 }
 
 
-const Game: React.FC<GameProps> = ({onPlayAgain}) => {
+const Game: React.FC<GameProps> = ({onPlayAgain, gameType = GameType.RAINBOW_HOP}) => {
   const [playerY, setPlayerY] = useState(GAME_HEIGHT - PLAYER_HEIGHT);
   const [playerVelocity, setPlayerVelocity] = useState(0);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);

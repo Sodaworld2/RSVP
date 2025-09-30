@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ConnectionMethod, RsvpData } from '../../types';
-import { db } from '../../firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { rsvpService } from '../../services/rsvps';
 
 
 interface RsvpFormProps {
@@ -54,14 +53,16 @@ const RsvpForm: React.FC<RsvpFormProps> = ({ onSubmit, eventId }) => {
     setIsSubmitting(true);
 
     try {
-      const docRef = await addDoc(collection(db, "rsvps"), {
-        ...formData,
-        submittedAt: new Date(),
+      await rsvpService.submitRsvp({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        connectionMethod: formData.connectionMethod!,
+        eventId: formData.eventId,
       });
-      console.log("Document written with ID: ", docRef.id);
+      console.log("RSVP submitted successfully");
       onSubmit();
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error("Error submitting RSVP: ", e);
       setError('Failed to submit RSVP. Please try again later.');
     } finally {
       setIsSubmitting(false);

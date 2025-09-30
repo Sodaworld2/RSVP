@@ -1,9 +1,16 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { eventService } from '../services/events';
-import { rsvpService } from '../services/rsvps';
-import { userService } from '../services/users';
-import { databaseService } from '../services/database';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Event, RsvpData, User, GameType, ConnectionMethod } from '../types';
+
+// Mock Firestore functions using vi.hoisted
+const mockAddDoc = vi.hoisted(() => vi.fn());
+const mockGetDocs = vi.hoisted(() => vi.fn());
+const mockGetDoc = vi.hoisted(() => vi.fn());
+const mockSetDoc = vi.hoisted(() => vi.fn());
+const mockUpdateDoc = vi.hoisted(() => vi.fn());
+const mockDeleteDoc = vi.hoisted(() => vi.fn());
+const mockEnableIndexedDbPersistence = vi.hoisted(() => vi.fn());
+const mockUploadBytes = vi.hoisted(() => vi.fn());
+const mockGetDownloadURL = vi.hoisted(() => vi.fn());
 
 // Mock Firebase
 vi.mock('../firebaseConfig', () => ({
@@ -11,33 +18,41 @@ vi.mock('../firebaseConfig', () => ({
   storage: {},
 }));
 
-// Mock Firestore functions
 vi.mock('firebase/firestore', () => ({
   collection: vi.fn(),
-  addDoc: vi.fn(),
-  getDocs: vi.fn(),
+  addDoc: mockAddDoc,
+  getDocs: mockGetDocs,
   doc: vi.fn(),
-  getDoc: vi.fn(),
-  setDoc: vi.fn(),
-  updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
+  getDoc: mockGetDoc,
+  setDoc: mockSetDoc,
+  updateDoc: mockUpdateDoc,
+  deleteDoc: mockDeleteDoc,
   query: vi.fn(),
   where: vi.fn(),
   orderBy: vi.fn(),
   Timestamp: {
     fromDate: vi.fn((date: Date) => ({ toDate: () => date })),
   },
-  enableIndexedDbPersistence: vi.fn(),
+  enableIndexedDbPersistence: mockEnableIndexedDbPersistence,
 }));
 
-// Mock Firebase Storage
 vi.mock('firebase/storage', () => ({
   ref: vi.fn(),
-  uploadBytes: vi.fn(),
-  getDownloadURL: vi.fn(),
+  uploadBytes: mockUploadBytes,
+  getDownloadURL: mockGetDownloadURL,
 }));
 
+// Import services after mocks
+import { eventService } from '../services/events';
+import { rsvpService } from '../services/rsvps';
+import { userService } from '../services/users';
+import { databaseService } from '../services/database';
+
 describe('Database Services', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('EventService', () => {
     const mockEvent: Omit<Event, 'id' | 'createdAt' | 'updatedAt'> = {
       title: 'Test Event',
@@ -49,8 +64,7 @@ describe('Database Services', () => {
     };
 
     it('should create an event with proper validation', async () => {
-      const mockAddDoc = vi.fn().mockResolvedValue({ id: 'test-event-id' });
-      vi.mocked(require('firebase/firestore').addDoc).mockImplementation(mockAddDoc);
+      mockAddDoc().mockResolvedValue({ id: 'test-event-id' });
 
       const result = await eventService.createEvent(mockEvent);
 
@@ -80,7 +94,7 @@ describe('Database Services', () => {
         ],
       };
 
-      vi.mocked(require('firebase/firestore').getDocs).mockResolvedValue(mockQuerySnapshot);
+      mockGetDocs().mockResolvedValue(mockQuerySnapshot);
 
       const events = await eventService.getEventsByUser('test@sodaworld.tv');
 
@@ -106,7 +120,7 @@ describe('Database Services', () => {
         ],
       };
 
-      vi.mocked(require('firebase/firestore').getDocs).mockResolvedValue(mockQuerySnapshot);
+      mockGetDocs().mockResolvedValue(mockQuerySnapshot);
 
       const events = await eventService.getActiveEvents();
 

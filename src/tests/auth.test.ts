@@ -1,80 +1,203 @@
-// This is a manual test file to verify authentication functionality
-// Run this in the browser console to test the auth service
-
-import { authService } from '../services/auth';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../types';
 
-// Test 1: Domain validation
-export const testDomainValidation = () => {
-  console.log('🧪 Testing domain validation...');
-  
-  const validUser: User = {
-    uid: 'test-uid',
-    email: 'test@sodaworld.tv',
-    domain: 'sodaworld.tv',
-    lastLogin: new Date()
-  };
-  
-  const invalidUser: User = {
-    uid: 'test-uid-2',
-    email: 'test@gmail.com',
-    domain: 'gmail.com',
-    lastLogin: new Date()
-  };
-  
-  console.log('✅ Valid user authorized:', authService.isAuthorized(validUser)); // Should be true
-  console.log('❌ Invalid user authorized:', authService.isAuthorized(invalidUser)); // Should be false
-};
+// Mock Firebase Auth using vi.hoisted
+const mockAuth = vi.hoisted(() => ({
+  currentUser: null,
+  setPersistence: vi.fn(),
+  signInWithPopup: vi.fn(),
+  signOut: vi.fn(),
+  onAuthStateChanged: vi.fn(),
+}));
 
-// Test 2: Current user state
-export const testCurrentUser = () => {
-  console.log('🧪 Testing current user state...');
-  const currentUser = authService.getCurrentUser();
-  console.log('Current user:', currentUser);
-  
-  if (currentUser) {
-    console.log('User is signed in:', currentUser.email);
-    console.log('User is authorized:', authService.isAuthorized(currentUser));
-  } else {
-    console.log('No user is currently signed in');
-  }
-};
+const mockGoogleAuthProvider = vi.hoisted(() => vi.fn());
+const mockSignInWithPopup = vi.hoisted(() => vi.fn());
+const mockSignOut = vi.hoisted(() => vi.fn());
+const mockOnAuthStateChanged = vi.hoisted(() => vi.fn());
+const mockSetPersistence = vi.hoisted(() => vi.fn());
 
-// Test 3: Authentication state listener
-export const testAuthStateListener = () => {
-  console.log('🧪 Testing auth state listener...');
-  
-  const unsubscribe = authService.onAuthStateChanged((user) => {
-    if (user) {
-      console.log('🔐 User signed in:', user.email);
-      console.log('🔑 User authorized:', authService.isAuthorized(user));
-    } else {
-      console.log('🚪 User signed out');
-    }
+vi.mock('../firebaseConfig', () => ({
+  auth: mockAuth,
+}));
+
+vi.mock('firebase/auth', () => ({
+  GoogleAuthProvider: mockGoogleAuthProvider,
+  signInWithPopup: mockSignInWithPopup,
+  signOut: mockSignOut,
+  onAuthStateChanged: mockOnAuthStateChanged,
+  setPersistence: mockSetPersistence,
+  browserLocalPersistence: 'local',
+}));
+
+// Import after mocks
+import { authService } from '../services/auth';
+
+describe('AuthService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockAuth.currentUser = null;
   });
-  
-  // Return unsubscribe function for cleanup
-  return unsubscribe;
-};
 
-// Run all tests
-export const runAuthTests = () => {
-  console.log('🚀 Running authentication tests...');
-  testDomainValidation();
-  testCurrentUser();
-  const unsubscribe = testAuthStateListener();
-  
-  console.log('✅ Tests completed. Auth state listener is active.');
-  console.log('💡 Try signing in/out to see the listener in action.');
-  console.log('🧹 Call the returned unsubscribe function to stop listening.');
-  
-  return unsubscribe;
-};
+  describe('Domain validation', () => {
+    it('should authorize sodaworld.tv users', () => {
+      const validUser: User = {
+        uid: 'test-uid',
+        email: 'test@sodaworld.tv',
+        domain: 'sodaworld.tv',
+        lastLogin: new Date()
+      };
 
-// Export for browser console testing
-(window as any).authTests = {
-  testDomainValidation,
-  testCurrentUser,
-  testAuthStateListener,
-  runAuthTests
-};
+      expect(authService.isAuthorized(validUser)).toBe(true);
+    });
+
+    it('should not authorize non-sodaworld.tv users', () => {
+      const invalidUser: User = {
+        uid: 'test-uid-2',
+        email: 'test@gmail.com',
+        domain: 'gmail.com',
+        lastLogin: new Date()
+      };
+
+      expect(authService.isAuthorized(invalidUser)).toBe(false);
+    });
+
+    it('should handle case insensitive domain validation', () => {
+      const userWithCaps: User = {
+        uid: 'test-uid-3',
+        email: 'test@SODAWORLD.TV',
+        domain: 'SODAWORLD.TV',
+        lastLogin: new Date()
+      };
+
+      expect(authService.isAuthorized(userWithCaps)).toBe(true);
+    });
+  });
+
+  describe('Current user state', () => {
+    it('should return null when no user is signed in', () => {
+      mockAuth.currentUser = null;
+      expect(authService.getCurrentUser()).toBeNull();
+    });
+
+    it('should return mapped user when user is signed in', () => {
+      const mockFirebaseUser = {
+        uid: 'test-uid',
+        email: 'test@sodaworld.tv',
+        displayName: 'Test User',
+        photoURL: 'https://example.com/photo.jpg'
+      };
+
+      mockAuth.currentUser = mockFirebaseUser;
+      const user = authService.getCurrentUser();
+
+      expect(user).toMatchObject({
+        uid: 'test-uid',
+        email: 'test@sodaworld.tv',
+        displayName: 'Test User',
+        photoURL: 'https://example.com/photo.jpg',
+        domain: 'sodaworld.tv'
+      });
+      expect(user?.lastLogin).toBeInstanceOf(Date);
+    });
+  });
+
+  describe('Sign in with Google', () => {
+    it('should sign in authorized user successfully', async () => {
+      const mockResult = {
+        user: {
+          uid: 'test-uid',
+          email: 'test@sodaworld.tv',
+          displayName: 'Test User'
+        }
+      };
+
+      mockSignInWithPopup.mockResolvedValue(mockResult);
+      mockGoogleAuthProvider.mockImplementation(() => ({
+        addScope: vi.fn(),
+        setCustomParameters: vi.fn()
+      }));
+
+      const user = await authService.signInWithGoogle();
+
+      expect(user.email).toBe('test@sodaworld.tv');
+      expect(user.domain).toBe('sodaworld.tv');
+      expect(mockSignInWithPopup).toHaveBeenCalled();
+    });
+
+    it('should reject unauthorized user and sign out', async () => {
+      const mockResult = {
+        user: {
+          uid: 'test-uid',
+          email: 'test@gmail.com',
+          displayName: 'Test User'
+        }
+      };
+
+      mockSignInWithPopup.mockResolvedValue(mockResult);
+      mockSignOut.mockResolvedValue(undefined);
+      mockGoogleAuthProvider.mockImplementation(() => ({
+        addScope: vi.fn(),
+        setCustomParameters: vi.fn()
+      }));
+
+      await expect(authService.signInWithGoogle()).rejects.toThrow('Access denied. Only sodaworld.tv email addresses are allowed.');
+      expect(mockSignOut).toHaveBeenCalled();
+    });
+  });
+
+  describe('Sign out', () => {
+    it('should call Firebase signOut', async () => {
+      mockSignOut.mockResolvedValue(undefined);
+      await authService.signOut();
+      expect(mockSignOut).toHaveBeenCalled();
+    });
+  });
+
+  describe('Authentication state listener', () => {
+    it('should set up auth state listener', () => {
+      const callback = vi.fn();
+      const mockUnsubscribe = vi.fn();
+      mockOnAuthStateChanged.mockReturnValue(mockUnsubscribe);
+
+      const unsubscribe = authService.onAuthStateChanged(callback);
+
+      expect(mockOnAuthStateChanged).toHaveBeenCalled();
+      expect(unsubscribe).toBe(mockUnsubscribe);
+    });
+
+    it('should call callback with mapped user', () => {
+      const callback = vi.fn();
+      mockOnAuthStateChanged.mockImplementation((auth, cb) => {
+        const mockFirebaseUser = {
+          uid: 'test-uid',
+          email: 'test@sodaworld.tv',
+          displayName: 'Test User'
+        };
+        cb(mockFirebaseUser);
+        return vi.fn();
+      });
+
+      authService.onAuthStateChanged(callback);
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          uid: 'test-uid',
+          email: 'test@sodaworld.tv',
+          domain: 'sodaworld.tv'
+        })
+      );
+    });
+
+    it('should call callback with null when user signs out', () => {
+      const callback = vi.fn();
+      mockOnAuthStateChanged.mockImplementation((auth, cb) => {
+        cb(null);
+        return vi.fn();
+      });
+
+      authService.onAuthStateChanged(callback);
+
+      expect(callback).toHaveBeenCalledWith(null);
+    });
+  });
+});
