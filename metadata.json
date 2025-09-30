@@ -1,0 +1,5 @@
+{
+  "name": "Prototype Sessions RSVP",
+  "description": "An interactive splash page and RSVP form for the Prototype Sessions event. After submitting, users can play a simple and engaging browser game.",
+  "requestFramePermissions": []
+}
