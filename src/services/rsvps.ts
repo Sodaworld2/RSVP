@@ -4,6 +4,8 @@ import {
   collection, 
   addDoc, 
   getDocs, 
+  doc,
+  updateDoc,
   query, 
   where, 
   orderBy,
@@ -43,6 +45,27 @@ class RsvpServiceImpl implements RsvpService {
     
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => this.mapDocToRsvp(doc));
+  }
+
+  async getRsvpsNeedingReminders(eventId: string): Promise<RsvpData[]> {
+    const q = query(
+      collection(db, this.collectionName),
+      where('eventId', '==', eventId),
+      where('reminderSent', '==', false)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.mapDocToRsvp(doc));
+  }
+
+  async markReminderSent(rsvpIds: string[]): Promise<void> {
+    const batch = [];
+    for (const rsvpId of rsvpIds) {
+      const docRef = doc(db, this.collectionName, rsvpId);
+      batch.push(updateDoc(docRef, { reminderSent: true }));
+    }
+    
+    await Promise.all(batch);
   }
 
   private mapDocToRsvp(doc: any): RsvpData {

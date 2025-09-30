@@ -211,6 +211,8 @@ export interface EventService {
   createEvent(event: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event>;
   getEventsByUser(userEmail: string): Promise<Event[]>;
   getEventById(id: string): Promise<Event | null>;
+  getActiveEvents(): Promise<Event[]>;
+  getEventsForReminders(): Promise<Event[]>;
   updateEvent(id: string, updates: Partial<Event>): Promise<void>;
   deleteEvent(id: string): Promise<void>;
   uploadEventLogo(file: File): Promise<string>;
@@ -220,6 +222,8 @@ export interface RsvpService {
   submitRsvp(rsvp: Omit<RsvpData, 'id' | 'submittedAt'>): Promise<void>;
   getRsvpsByEvent(eventId: string): Promise<RsvpData[]>;
   getRsvpsByEmail(email: string): Promise<RsvpData[]>;
+  getRsvpsNeedingReminders(eventId: string): Promise<RsvpData[]>;
+  markReminderSent(rsvpIds: string[]): Promise<void>;
 }
 
 export interface EmailPayload {

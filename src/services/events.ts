@@ -41,7 +41,40 @@ class EventServiceImpl implements EventService {
     const q = query(
       collection(db, this.collectionName),
       where('createdBy', '==', userEmail),
+      where('isActive', '==', true),
       orderBy('datetime', 'desc')
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.mapDocToEvent(doc));
+  }
+
+  async getActiveEvents(): Promise<Event[]> {
+    const now = new Date();
+    const q = query(
+      collection(db, this.collectionName),
+      where('isActive', '==', true),
+      where('datetime', '>', Timestamp.fromDate(now)),
+      orderBy('datetime', 'asc')
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.mapDocToEvent(doc));
+  }
+
+  async getEventsForReminders(): Promise<Event[]> {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const dayAfterTomorrow = new Date(tomorrow);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+    
+    const q = query(
+      collection(db, this.collectionName),
+      where('isActive', '==', true),
+      where('datetime', '>=', Timestamp.fromDate(tomorrow)),
+      where('datetime', '<', Timestamp.fromDate(dayAfterTomorrow))
     );
     
     const querySnapshot = await getDocs(q);

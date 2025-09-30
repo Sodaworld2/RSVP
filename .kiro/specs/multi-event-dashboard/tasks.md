@@ -31,7 +31,8 @@
   - Add authentication guards and redirects
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 5. Implement database schema migration and services
+- [x] 5. Implement database schema migration and services
+
 
   - Create events collection structure in Firestore
   - Update rsvps collection to include eventId references
